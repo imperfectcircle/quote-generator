@@ -53,7 +53,9 @@ async function getQuotes() {
         apiQuotes = await response.json();
         newQuote();
     } catch (error) {
-        alert('An error occured, please try later!');
+        alert(
+            `An error occured, please try later or contact the owner of this site and report this error: '${error}'`,
+        );
     }
 }
 
