@@ -1,3 +1,6 @@
+/* eslint-disable no-alert */
+/* eslint-disable no-unused-expressions */
+/* eslint-disable no-undef */
 const quoteContainer = document.getElementById('quote-container');
 const quoteText = document.getElementById('quote');
 const authorText = document.getElementById('author');
@@ -7,21 +10,18 @@ const loader = document.getElementById('loader');
 
 let apiQuotes = [];
 
-// Show Loading
-const loading = () => {
+const showLoadingSpinner = () => {
     loader.hidden = false;
     quoteContainer.hidden = true;
 };
 
-// Hide Loading
-const completeLoading = () => {
+const hideLoadingSpinner = () => {
     loader.hidden = true;
     quoteContainer.hidden = false;
 };
 
-// Show New Quote
-const newQuote = () => {
-    loading();
+const showNewQuote = () => {
+    showLoadingSpinner();
     // Pick a random quote from apiQuotes array
     const apiQuotesIndex = Math.floor(Math.random() * apiQuotes.length);
     const quote = apiQuotes[apiQuotesIndex];
@@ -35,33 +35,31 @@ const newQuote = () => {
         : quoteText.classList.remove('long-quote');
     // Set Quote, Hide Loader
     quoteText.textContent = quote.text;
-    completeLoading();
+    hideLoadingSpinner();
 };
 
-// Tweet Quote
-const tweetQuote = () => {
-    const twitterUrl = `https://twitter.com/intent/tweet?text=${quoteText.textContent} - ${authorText.textContent}`;
-    window.open(twitterUrl, '_blank');
-};
-
-// Get quotes from API
-async function getQuotes() {
-    loading();
+const getQuotesFromApi = async () => {
+    showLoadingSpinner();
     const apiUrl = 'https://type.fit/api/quotes';
     try {
         const response = await fetch(apiUrl);
         apiQuotes = await response.json();
-        newQuote();
+        showNewQuote();
     } catch (error) {
         alert(
             `An error occured, please try later or contact the owner of this site and report this error: '${error}'`,
         );
     }
-}
+};
+
+const shareQuoteOnTwitterHandler = () => {
+    const twitterUrl = `https://twitter.com/intent/tweet?text=${quoteText.textContent} - ${authorText.textContent}`;
+    window.open(twitterUrl, '_blank');
+};
 
 // Event Listener
-newQuoteBtn.addEventListener('click', newQuote);
-twitterBtn.addEventListener('click', tweetQuote);
+newQuoteBtn.addEventListener('click', showNewQuote);
+twitterBtn.addEventListener('click', shareQuoteOnTwitterHandler);
 
 // On Load
-getQuotes();
+getQuotesFromApi();
